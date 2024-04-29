@@ -1,2 +1,2 @@
-# Currency-Converter
+# CurrencyHub
 Currency Converter | Foreign Exchange Rates

@@ -1,37 +1,78 @@
 export default function Exchange() {
   return (
     <div class="mt-28">
-      <span class="self-center text-6xl font-bold whitespace-nowrap text-green-300">
+      <span class="self-center text-6xl font-bold text-green-300">
         CURRENCY CONVERTER
       </span>
-      <div class="mt-8 bg-white rounded-lg h-40 ">
-        <div class="flex flex-row justify-items-center">
-          <input
-            class="shadow appearance-none border rounded w-40 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="username"
-            type="text"
-            placeholder="Username"
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
+      <div class="bg-white shadow-md rounded-md p-6 max-w-sm mx-auto relative text-left flex flex-row">
+        <div class="mr-4">
+          <label
+            for="price"
+            class="block text-sm font-medium leading-6 text-gray-900"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+            Amount
+          </label>
+          <div class="relative mt-2 rounded-md shadow-sm">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <span class="text-gray-500 sm:text-sm">$</span>
+            </div>
+            <input
+              type="text"
+              name="price"
+              id="price"
+              class="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="0.00"
             />
-          </svg>
-          <input
-            class="shadow appearance-none border rounded w-40 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="username"
-            type="text"
-            placeholder="Username"
-          />
+            <div class="absolute inset-y-0 right-0 flex items-center">
+              <label for="currency" class="sr-only">
+                Currency
+              </label>
+              <select
+                id="currency"
+                name="currency"
+                class="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+              >
+                <option>USD</option>
+                <option>CAD</option>
+                <option>EUR</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label
+            for="price"
+            class="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Converted to
+          </label>
+          <div class="relative mt-2 rounded-md shadow-sm">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <span class="text-gray-500 sm:text-sm">$</span>
+            </div>
+            <input
+              type="text"
+              name="price"
+              id="price"
+              class="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="0.00"
+            />
+            <div class="absolute inset-y-0 right-0 flex items-center">
+              <label for="currency" class="sr-only">
+                Currency
+              </label>
+              <select
+                id="currency"
+                name="currency"
+                class="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+              >
+                <option>USD</option>
+                <option>CAD</option>
+                <option>EUR</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </div>
