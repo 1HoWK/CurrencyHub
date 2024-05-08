@@ -21,8 +21,19 @@ export default function Exchange() {
   const [amountCurrency, setAmountCurrency] = useState(["MYR"]);
   const [convertCurrency, setConvertCurrency] = useState(["USD"]);
 
-  const [leftCurrency, setLeftCurrency] = useState(["1"]);
-  const [rightCurrency, setRightCurrency] = useState(["4.5"]);
+  const [leftCurrency, setLeftCurrency] = useState('');
+  const [rightCurrency, setRightCurrency] = useState('');
+
+  // const amountInput = document.getElementById('amountInput');
+  // const convertedInput = document.getElementById('convertedInput');
+  // amountInput.addEventListener("input", () => {
+  //   convertedInput.textContent = amountInput.value * 4.5;
+  // });
+
+  const handleInputChange = (event) => {
+    setRightCurrency((event.target.value * 4.5));
+};
+
   return (
     <div class="mt-28">
       <span class="self-center text-6xl font-bold text-green-300">
@@ -38,10 +49,11 @@ export default function Exchange() {
             <input
               type="text"
               name="price"
-              id="price"
+              id="amountInput"
               class="block w-full rounded-md border-0 py-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-950 sm:leading-6"
               placeholder="0.00"
               value={leftCurrency}
+              onChange={handleInputChange} // Attach event listener
             />
             <div class="absolute inset-y-0 right-0 flex items-center">
               <label for="currency" class="sr-only">
@@ -99,7 +111,7 @@ export default function Exchange() {
             <input
               type="text"
               name="price"
-              id="price"
+              id="convertedInput"
               class="block w-full rounded-md border-0 py-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-950 sm:leading-6"
               placeholder="0.00"
               value={rightCurrency}
