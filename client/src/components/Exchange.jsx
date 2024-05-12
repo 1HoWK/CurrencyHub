@@ -21,8 +21,8 @@ export default function Exchange() {
   const [amountCurrency, setAmountCurrency] = useState(["MYR"]);
   const [convertCurrency, setConvertCurrency] = useState(["USD"]);
 
-  const [leftCurrency, setLeftCurrency] = useState('');
-  const [rightCurrency, setRightCurrency] = useState('');
+  const [leftCurrency, setLeftCurrency] = useState("");
+  const [rightCurrency, setRightCurrency] = useState("");
 
   // const amountInput = document.getElementById('amountInput');
   // const convertedInput = document.getElementById('convertedInput');
@@ -31,8 +31,9 @@ export default function Exchange() {
   // });
 
   const handleInputChange = (event) => {
-    setRightCurrency((event.target.value * 4.5));
-};
+    setLeftCurrency(event.target.value);
+    setRightCurrency(event.target.value * 4.5);
+  };
 
   return (
     <div class="mt-28">
@@ -52,7 +53,6 @@ export default function Exchange() {
               id="amountInput"
               class="block w-full rounded-md border-0 py-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-950 sm:leading-6"
               placeholder="0.00"
-              value={leftCurrency}
               onChange={handleInputChange} // Attach event listener
             />
             <div class="absolute inset-y-0 right-0 flex items-center">
@@ -109,6 +109,7 @@ export default function Exchange() {
           </label>
           <div class="relative mt-2 rounded-md shadow-sm font-semibold text-lg">
             <input
+              disabled
               type="text"
               name="price"
               id="convertedInput"
