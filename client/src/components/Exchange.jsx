@@ -1,22 +1,25 @@
-import { useState } from "react";
+import {useState, useEffect } from "react";
 
 export default function Exchange() {
-  const currency = [
-    "MYR",
-    "EUR",
-    "GBP",
-    "USD",
-    "INR",
-    "CAD",
-    "AUD",
-    "SGD",
-    "TWD",
-    "THB",
-    "PHP",
-    "IDR",
-    "HKD",
-    "CNY",
-  ];
+ const [supportedCurrencyCodes, setSupportedCurrencyCodes] = useState([]);
+
+  useEffect(() => {
+    const fetchCurrencyCodes = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/supportedCurrencyCodes');
+        if (!response.ok) {
+          throw new Error('Failed to fetch currency codes');
+        }
+        const data = await response.json();
+        console.log(data);
+        setSupportedCurrencyCodes(data);
+      } catch (error) {
+        console.error('Error fetching currency codes:', error);
+      }
+    };
+
+    fetchCurrencyCodes();
+  }, []); 
 
   const [amountCurrency, setAmountCurrency] = useState(["MYR"]);
   const [convertCurrency, setConvertCurrency] = useState(["USD"]);
@@ -24,11 +27,6 @@ export default function Exchange() {
   const [leftCurrency, setLeftCurrency] = useState("");
   const [rightCurrency, setRightCurrency] = useState("");
 
-  // const amountInput = document.getElementById('amountInput');
-  // const convertedInput = document.getElementById('convertedInput');
-  // amountInput.addEventListener("input", () => {
-  //   convertedInput.textContent = amountInput.value * 4.5;
-  // });
 
   const handleInputChange = (event) => {
     setLeftCurrency(event.target.value);
@@ -64,7 +62,7 @@ export default function Exchange() {
                 name="currency"
                 class="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
               >
-                {currency.map((option) => (
+                {supportedCurrencyCodes.map((option) => (
                   <option key={option}>{option}</option>
                 ))}
               </select>
@@ -126,8 +124,8 @@ export default function Exchange() {
                 name="currency"
                 class="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
               >
-                {currency.map((option) => (
-                  <option key={option}>{option}</option>
+                {supportedCurrencyCodes.map((code, index) => (
+                  <option key={index}>{code}</option>
                 ))}
               </select>
             </div>
