@@ -42,9 +42,10 @@ app.get("/api/supportedCurrencyCodes", async (req, res) => {
     );
     // const object = response.data.supported_codes;
     // console.log(object);
-    const currencyCodes = await response.data.supported_codes.map(
-      (code) => code[0]
-    );
+    // const currencyCodes = await response.data.supported_codes.map(
+    //   (code) => code[0]
+    // );
+    const currencyCodes = await response.data.supported_codes;
     // console.log(currencyCodes);
     res.json(currencyCodes);
   } catch (error) {

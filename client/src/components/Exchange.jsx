@@ -1,32 +1,33 @@
-import {useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function Exchange() {
- const [supportedCurrencyCodes, setSupportedCurrencyCodes] = useState([]);
+  const [supportedCurrencyCodes, setSupportedCurrencyCodes] = useState([]);
 
   useEffect(() => {
     const fetchCurrencyCodes = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/supportedCurrencyCodes');
+        const response = await fetch(
+          "http://localhost:8000/api/supportedCurrencyCodes"
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch currency codes');
+          throw new Error("Failed to fetch currency codes");
         }
         const data = await response.json();
         console.log(data);
         setSupportedCurrencyCodes(data);
       } catch (error) {
-        console.error('Error fetching currency codes:', error);
+        console.error("Error fetching currency codes:", error);
       }
     };
 
     fetchCurrencyCodes();
-  }, []); 
+  }, []);
 
   const [amountCurrency, setAmountCurrency] = useState(["MYR"]);
   const [convertCurrency, setConvertCurrency] = useState(["USD"]);
 
   const [leftCurrency, setLeftCurrency] = useState("");
   const [rightCurrency, setRightCurrency] = useState("");
-
 
   const handleInputChange = (event) => {
     setLeftCurrency(event.target.value);
@@ -63,7 +64,9 @@ export default function Exchange() {
                 class="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
               >
                 {supportedCurrencyCodes.map((option) => (
-                  <option key={option}>{option}</option>
+                  <option key={option[0]} value={option[0]}>
+                    {option[0]}
+                  </option>
                 ))}
               </select>
             </div>
@@ -124,12 +127,38 @@ export default function Exchange() {
                 name="currency"
                 class="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
               >
-                {supportedCurrencyCodes.map((code, index) => (
-                  <option key={index}>{code}</option>
+                {supportedCurrencyCodes.map((option) => (
+                  <option key={option[0]} value={option[0]}>
+                    {option[0]}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="mt-16 max-w-screen-md mx-auto">
+        <h3 class="text-2xl font-bold text-green-300 mb-4">
+          Currency Information
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="table-auto min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-gray-200 text-gray-700">
+              <tr>
+                <th class="px-4 py-2">Currency Code</th>
+                <th class="px-4 py-2">Currency Name</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-600">
+              {supportedCurrencyCodes.map((option) => (
+                <tr key={option[0]}>
+                  <td className="border px-4 py-2">{option[0]}</td>
+                  <td className="border px-4 py-2">{option[1]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
