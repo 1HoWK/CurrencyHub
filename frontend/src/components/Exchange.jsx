@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 export default function Exchange() {
   const [supportedCurrencyCodes, setSupportedCurrencyCodes] = useState([]);
 
-  const [selectedBaseCurrency, setSelectedBaseCurrency] = useState("MYR");
-  const [selectedTargetCurrency, setSelectedTargetCurrency] = useState("USD");
+  const [selectedBaseCurrency, setSelectedBaseCurrency] = useState("USD");
+  const [selectedTargetCurrency, setSelectedTargetCurrency] = useState("MYR");
 
-  const [leftCurrency, setLeftCurrency] = useState("");
-  const [rightCurrency, setRightCurrency] = useState("");
+  const [baseCurrencyValue, setBaseCurrencyValue] = useState("1000");
+  const [targetCurrencyValue, setTargetCurrencyValue] = useState("");
+
+  const [conversionRate, setConversionRate] = useState("");
 
   useEffect(() => {
     const fetchCurrencyCodes = async () => {
@@ -30,24 +32,78 @@ export default function Exchange() {
     fetchCurrencyCodes();
   }, []);
 
-  // convert
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/convert", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            baseCurrency: selectedBaseCurrency,
+            targetCurrency: selectedTargetCurrency,
+            amount: 1000,
+          }),
+        });
 
-  // default currency
+        if (!response.ok) {
+          throw new Error("Failed to fetch currency codes");
+        } else {
+          const data = await response.json();
+          console.log(data);
+          setTargetCurrencyValue(data.conversion_result);
+          setConversionRate(data.conversion_rate);
+        }
+      } catch (error) {
+        alert("Something is wrong when communicate with server");
+        console.error("Error fetching currency codes:", error);
+      }
+    };
 
-  const handleInputChange = (event) => {
-    setLeftCurrency(event.target.value);
-    setRightCurrency(event.target.value * 4.5);
+    fetchData();
+  }, []);
+
+  const convertHandler = async (event) => {
+    try {
+      const response = await fetch("http://localhost:8000/api/convert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          baseCurrency: selectedBaseCurrency,
+          targetCurrency: selectedTargetCurrency,
+          amount: baseCurrencyValue,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch currency codes");
+      } else {
+        const data = await response.json();
+        console.log(data);
+        setTargetCurrencyValue(data.conversion_result);
+        setConversionRate(data.conversion_rate);
+      }
+    } catch (error) {
+      alert("Something is wrong when communicate with server");
+      console.error("Error fetching currency codes:", error);
+    }
   };
 
   return (
-    <div className="mt-28">
+    <div className="mt-28" id="convert">
       <span className="self-center text-6xl font-bold text-white">
         CURRENCY CONVERTER
       </span>
       <div className="mt-16 bg-white shadow-md rounded-3xl p-20 max-w-4xl mx-auto relative text-left flex flex-row shadow-2xl">
         {/* First input */}
         <div className="w-2/3">
-          <label for="price" className="block text-sm leading-6 text-gray-900">
+          <label
+            for="price"
+            className="block text-base leading-6 text-gray-900"
+          >
             Amount
           </label>
           <div className="relative mt-2 rounded-md shadow-sm font-semibold text-lg">
@@ -55,9 +111,10 @@ export default function Exchange() {
               type="text"
               name="price"
               id="amountInput"
-              className="block w-full rounded-md border-0 py-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-950 sm:leading-6"
+              className="block w-full rounded-md border-0 py-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-950 sm:leading-6"
+              value={baseCurrencyValue}
               placeholder="0.00"
-              onChange={handleInputChange} // Attach event listener
+              onChange={(e) => setBaseCurrencyValue(e.target.value)}
             />
             <div className="absolute inset-y-0 right-0 flex items-center">
               <label for="currency" className="sr-only">
@@ -68,7 +125,7 @@ export default function Exchange() {
                 name="currency"
                 value={selectedBaseCurrency}
                 onChange={(e) => setSelectedBaseCurrency(e.target.value)}
-                className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-950"
               >
                 {supportedCurrencyCodes.map((option) => (
                   <option
@@ -82,20 +139,14 @@ export default function Exchange() {
               </select>
             </div>
           </div>
-          {/* Conversion rate */}
-          {/* <p className="text-lg mt-2 font-semibold">
-            {leftCurrency} {selectedBaseCurrency} = {rightCurrency} {selectedTargetCurrency}
-          </p> */}
-          <div className="text-lg mt-2 font-semibold flex">
-            <p>
-              {leftCurrency} {selectedBaseCurrency} =&nbsp;
-            </p>
-            <p className="text-green-700">{rightCurrency}&nbsp;</p>
-            {selectedTargetCurrency}
+          <div className="text-lg mt-4 font-semibold flex">
+            <p>1.000 {selectedBaseCurrency} =&nbsp;</p>
+            <p className="text-indigo-400">{conversionRate}&nbsp;</p>
+            <p>{selectedTargetCurrency}</p>
           </div>
         </div>
 
-        <div className="flex items-center mx-4">
+        <div className="flex items-center mx-4 mb-8">
           <svg
             className="w-[28px] h-[28px] text-gray-800 dark:text-white"
             aria-hidden="true"
@@ -115,8 +166,11 @@ export default function Exchange() {
           </svg>
         </div>
         {/* Second input */}
-        <div className="w-2/3">
-          <label for="price" className="block text-sm leading-6 text-gray-900">
+        <div className="w-2/3 flex-col">
+          <label
+            for="price"
+            className="block text-base leading-6 text-gray-900"
+          >
             Converted to
           </label>
           <div className="relative mt-2 rounded-md shadow-sm font-semibold text-lg">
@@ -125,9 +179,9 @@ export default function Exchange() {
               type="text"
               name="price"
               id="convertedInput"
-              className="block w-full rounded-md border-0 py-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-950 sm:leading-6"
-              placeholder="0.00"
-              value={rightCurrency}
+              className="block w-full rounded-md border-0 py-5 pr-20 text-indigo-400 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-950 sm:leading-6"
+              // placeholder="0.00"
+              value={targetCurrencyValue}
             />
             <div className="absolute inset-y-0 right-0 flex items-center">
               <label for="currency" className="sr-only">
@@ -138,7 +192,7 @@ export default function Exchange() {
                 name="currency"
                 value={selectedTargetCurrency}
                 onChange={(e) => setSelectedTargetCurrency(e.target.value)}
-                className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                className="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-950"
               >
                 {supportedCurrencyCodes.map((option) => (
                   <option
@@ -152,12 +206,21 @@ export default function Exchange() {
               </select>
             </div>
           </div>
+          {/* Button */}
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-3xl shadow-sm text-white bg-indigo-800 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-950"
+              onClick={convertHandler}
+            >
+              Convert
+            </button>
+          </div>
         </div>
       </div>
-
-      <div className="mt-16 max-w-screen-md mx-auto">
+      <div className="mt-16 max-w-screen-md mx-auto" id="supported-codes">
         <p className="text-2xl font-bold text-white mb-4">
-          ACCEPTED CURRENCY CODES
+          LIST OF SUPPORTED CURRENCY CODES
         </p>
         <div className="overflow-x-auto">
           <table className="table-auto min-w-full bg-white shadow-md rounded-lg overflow-hidden">
@@ -170,8 +233,8 @@ export default function Exchange() {
             <tbody className="text-gray-600">
               {supportedCurrencyCodes.map((option) => (
                 <tr key={option[0]}>
-                  <td classNameName="border px-4 py-2">{option[0]}</td>
-                  <td classNameName="border px-4 py-2">{option[1]}</td>
+                  <td className="border px-4 py-2">{option[0]}</td>
+                  <td className="border px-4 py-2">{option[1]}</td>
                 </tr>
               ))}
             </tbody>
